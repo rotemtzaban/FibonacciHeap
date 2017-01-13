@@ -97,13 +97,23 @@ public class FibonacciHeap {
             this.size = heap2.size;
         }
 
-        HeapNode next = min.next;
-        min.next = heap2.min;
+        HeapNode next = this.min.next;
+        this.min.next = heap2.min;
         HeapNode prev = heap2.min.prev;
-        min.next = heap2.min;
+        this.min.next = heap2.min;
         heap2.min.prev = min;
         next.prev = prev;
         prev.next = next;
+
+        this.size +=heap2.size;
+        heap2.size = this.size;
+
+        if(heap2.min.key < this.min.key) {
+            this.min = heap2.min;
+        }
+        else {
+            heap2.min = this.min;
+        }
     }
 
     /**
@@ -143,7 +153,7 @@ public class FibonacciHeap {
      * to reflect this chage (for example, the cascading cuts procedure should be applied if needed).
      */
     public void decreaseKey(HeapNode x, int delta) {
-        return; // should be replaced by student code
+        return;
     }
 
     /**
@@ -188,6 +198,7 @@ public class FibonacciHeap {
      */
     public class HeapNode {
         int key;
+        int degree;
         HeapNode next;
         HeapNode prev;
         HeapNode child;
@@ -196,6 +207,7 @@ public class FibonacciHeap {
 
         private HeapNode(int key) {
             this.key = key;
+            this.degree = 0;
             this.next = this;
             this.prev = this;
             this.child = null;
