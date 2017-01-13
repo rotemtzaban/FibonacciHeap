@@ -164,9 +164,43 @@ public class FibonacciHeap {
      * The potential equals to the number of trees in the heap plus twice the number of marked nodes in the heap.
      */
     public int potential() {
-        return 0; // should be replaced by student code
+        return getNumMarked(min) + getNumTrees();
     }
 
+
+    private int getNumMarked(HeapNode node) {
+        if(node == null) {
+            return 0;
+        }
+
+        int numMarked = 0;
+        HeapNode curr = node;
+        do {
+            if (curr.marked) {
+                numMarked ++;
+            }
+
+            numMarked += getNumMarked(curr.child);
+            curr = curr.next;
+        } while(curr != node);
+
+        return numMarked;
+    }
+
+    private int getNumTrees() {
+        if (min == null) {
+            return 0;
+        }
+
+        HeapNode curr = min;
+        int count = 0;
+        do {
+            count ++;
+            curr = curr.next;
+        } while(curr != min);
+
+        return count;
+    }
     /**
      * public static int totalLinks()
      * <p>
