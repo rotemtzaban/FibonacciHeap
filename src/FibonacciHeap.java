@@ -1,3 +1,4 @@
+
 /**
  * FibonacciHeap
  * <p>
@@ -131,10 +132,30 @@ public class FibonacciHeap {
      * Return a counters array, where the value of the i-th entry is the number of trees of order i in the heap.
      */
     public int[] countersRep() {
-        int[] arr = new int[42];
-        return arr; //	 to be replaced by student code
+        int[] arr = new int[getMaxDegree() + 1];
+        if(min == null) {
+            return arr;
+        }
+
+        HeapNode curr = min;
+        do {
+            arr[curr.degree]++;
+            curr = curr.next;
+        } while(curr != min);
+
+        return arr;
     }
 
+    private int getMaxDegree() {
+        int max = 0;
+        HeapNode curr = min;
+        do {
+            max = Math.max(max, curr.degree);
+            curr = curr.next;
+        } while(curr != min);
+
+        return max;
+    }
     /**
      * public void delete(HeapNode x)
      * <p>
@@ -166,7 +187,6 @@ public class FibonacciHeap {
     public int potential() {
         return getNumMarked(min) + getNumTrees();
     }
-
 
     private int getNumMarked(HeapNode node) {
         if(node == null) {
@@ -201,6 +221,7 @@ public class FibonacciHeap {
 
         return count;
     }
+
     /**
      * public static int totalLinks()
      * <p>
