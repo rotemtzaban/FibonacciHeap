@@ -174,7 +174,52 @@ public class FibonacciHeap {
      * to reflect this chage (for example, the cascading cuts procedure should be applied if needed).
      */
     public void decreaseKey(HeapNode x, int delta) {
-        return;
+        x.key = x.key - delta;
+        HeapNode parent = x.parent;
+        if(parent != null && parent.key > x.key) {
+            cut(x, parent);
+            cascadingCut(parent);
+        }
+
+        if(x.key < min.key) {
+            min = x;
+        }
+    }
+
+
+    private void cut(HeapNode node, HeapNode parent) {
+        if(node.next == node) {
+            parent.child = null;
+        } else {
+            node.next.prev = node.prev;
+            node.prev.next = node.next;
+        }
+
+        parent.degree --;
+
+        addNodeToRootList(node);
+    }
+
+    private void addNodeToRootList(HeapNode node) {
+        min.next.prev = node;
+        node.next = min.next;
+        min.next = node;
+        node.prev = min;
+
+        node.parent = null;
+        node.marked = false;
+    }
+
+    private void cascadingCut(HeapNode node) {
+        HeapNode parent = node.parent;
+        if(parent != null) {
+            if(!node.marked) {
+                node.marked = true;
+            } else {
+                cut(node, parent);
+                cascadingCut(parent);
+            }
+        }
     }
 
     /**
