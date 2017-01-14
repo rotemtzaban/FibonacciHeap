@@ -189,9 +189,10 @@ public class FibonacciHeap {
 
     private void cut(HeapNode node, HeapNode parent) {
         totalCuts++;
-        if(node.next == node) {
+        if (node.next == node) {
             parent.child = null;
         } else {
+            parent.child = node.next;
             node.next.prev = node.prev;
             node.prev.next = node.next;
         }
