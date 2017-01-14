@@ -106,7 +106,7 @@ public class FibonacciHeap {
         next.prev = prev;
         prev.next = next;
 
-        this.size +=heap2.size;
+        this.size += heap2.size;
         heap2.size = this.size;
 
         if(heap2.min.key < this.min.key) {
@@ -188,6 +188,7 @@ public class FibonacciHeap {
 
 
     private void cut(HeapNode node, HeapNode parent) {
+        totalCuts++;
         if(node.next == node) {
             parent.child = null;
         } else {
@@ -305,7 +306,7 @@ public class FibonacciHeap {
         HeapNode parent;
         Boolean marked;
 
-        private HeapNode(int key) {
+        public HeapNode(int key) {
             this.key = key;
             this.degree = 0;
             this.next = this;
