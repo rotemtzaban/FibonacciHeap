@@ -70,9 +70,105 @@ public class FibonacciHeap {
      * Delete the node containing the minimum key.
      */
     public void deleteMin() {
+
+        if(empty()){
+            return;
+        }
+        size--;
+        HeapNode nextMin = min.next;
+        HeapNode minChild = min.child;
+        if(nextMin == min){
+            min = minChild;
+            if(min == null) {
+                return;
+                }
+            deleteParentsAndUnmarkChilds(minChild);
+            nextMin = min.next;
+            }
+        else {
+            nextMin.prev = min.prev;
+            min.prev.next = nextMin;
+            min = nextMin;
+            if(minChild != null){
+                deleteParentsAndUnmarkChilds(minChild);
+                int realSize = size;
+                FibonacciHeap minChilds = new FibonacciHeap(minChild);
+                this.meld(minChilds);
+                size = realSize;
+            }
+        }
+        if(nextMin.next != nextMin){
+            HeapNode[] resultRoots = new HeapNode[Math.round((float)( 1.5 * Math.log(size) ))];
+            HeapNode nextRoot = nextMin;
+            while(nextRoot.next != nextMin){
+                HeapNode x = resultRoots[nextRoot.degree];
+                HeapNode y = nextRoot;
+                while(x != null){
+                    if(x.key > y.key){
+                        y = resultRoots[nextRoot.degree];
+                        x = nextRoot;
+                    }
+                    link(x,y);
+                    resultRoots[nextRoot.degree] = null;
+                    y = x;
+                    x = resultRoots[x.degree];
+                }
+                if(y.key < min.key)
+                    min = y;
+                y.next = null;
+                y.prev = null;
+                resultRoots[y.degree] = y;
+                nextRoot = nextRoot.next;
+            }
+            min.next = min;
+            min.prev = min;
+            for (int i = 0; i < resultRoots.length; i++) {
+                if(resultRoots[i] != null && resultRoots[i] != min){
+                    addNodeToRootList(resultRoots[i]);
+                }
+            }
+        }
+
+
         return; // should be replaced by student code
     }
 
+    /*
+    This method does the following for each child in the child list that node in it:
+    - setting child.parent to null
+    - setting child.marked to false
+     */
+    private void deleteParentsAndUnmarkChilds(HeapNode node){
+        node.parent = null;
+        node.marked = false;
+        HeapNode nextNode = node.next;
+        while(nextNode != node){
+            nextNode.parent = null;
+            nextNode.marked = false;
+            nextNode = nextNode.next;
+        }
+    }
+
+    /*
+    Linking 2 roots x,y together assuming x.key <= y.key
+     */
+    private void link(HeapNode x, HeapNode y){
+        FibonacciHeap.totalLinks++;
+        y.parent = x;
+        x.degree ++;
+        if(x.child == null){
+            y.next = y;
+            y.prev = y;
+        }
+        else {
+            HeapNode prev = x.child.prev;
+            x.child.prev = y;
+            prev.next = y;
+            y.prev = prev;
+            y.next = x.child;
+        }
+        x.child = y;
+    }
     /**
      * public HeapNode findMin()
      * <p>
