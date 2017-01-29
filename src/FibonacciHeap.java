@@ -344,7 +344,7 @@ public class FibonacciHeap {
      * adds a node to the root list of the heap, appending it to the minimum of the heap
      * @param node
      */
-    private void addNodeToRootList(HeapNode node) {
+    private void  addNodeToRootList(HeapNode node) {
         //if heap is empty, set min to node
         if(min == null) {
             min = node;
@@ -418,13 +418,13 @@ public class FibonacciHeap {
      * A node of a fibonacci heap
      */
     public class HeapNode {
-        int key;
-        int degree;
-        HeapNode next;
-        HeapNode prev;
-        HeapNode child;
-        HeapNode parent;
-        boolean marked;
+        private int key;
+        private int degree;
+        private HeapNode next;
+        private HeapNode prev;
+        private HeapNode child;
+        private HeapNode parent;
+        private boolean marked;
 
         public HeapNode(int key) {
             this.key = key;
@@ -436,6 +436,9 @@ public class FibonacciHeap {
             this.marked = false;
         }
 
+        public int getKey() {
+            return this.key;
+        }
         /**
          * set's the node's marked field to mark, increasing or decreasing the heap's numMarked field if
          * marked has changed
