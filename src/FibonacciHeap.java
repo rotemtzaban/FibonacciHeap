@@ -204,7 +204,11 @@ public class FibonacciHeap {
         }
         else {
             // Concatenate the root list of heap2 with current heap's root list
-            concatenateNodeLists(this.min, heap2.min);
+            min.next.prev = heap2.min.prev;
+            heap2.min.prev.next = min.next;
+
+            min.next = heap2.min;
+            heap2.min.prev = min;
         }
 
         this.size += heap2.size;
@@ -216,18 +220,6 @@ public class FibonacciHeap {
         }
     }
 
-    /**
-     * Concatenates the two node lists of node1 and node2
-     * inserts the second node after the second node
-     */
-    private static void concatenateNodeLists(HeapNode node1, HeapNode node2) {
-        // Insert the second node list between node1 and node1.next
-        node1.next.prev = node2.prev;
-        node2.prev.next = node1.next;
-
-        node1.next = node2;
-        node2.prev = node1;
-    }
     /**
      * public int size()
      * <p>
@@ -244,7 +236,7 @@ public class FibonacciHeap {
      */
     public int[] countersRep() {
         if(min == null) {
-            return new int[1];
+            return new int[0];
         }
 
         // Create an array of size maxDegree + 1 to contain the counters
@@ -313,7 +305,7 @@ public class FibonacciHeap {
      * cuts a node from it's parent, adding the node to the root list, and increasing totalCuts
      * assumes node and parent aren't null
      * @param node - the node to be cut
-     * @param parent - the nodes parents
+     * @param parent - the node's parents
      */
     private void cut(HeapNode node, HeapNode parent) {
         totalCuts++;
@@ -388,7 +380,7 @@ public class FibonacciHeap {
      * The potential equals to the number of trees in the heap plus twice the number of marked nodes in the heap.
      */
     public int potential() {
-        return numMarked + numRoots;
+        return 2*numMarked + numRoots;
     }
 
     /**
@@ -400,7 +392,7 @@ public class FibonacciHeap {
      * in its root.
      */
     public static int totalLinks() {
-        return totalLinks; // should be replaced by student code
+        return totalLinks;
     }
 
     /**
@@ -410,7 +402,7 @@ public class FibonacciHeap {
      * A cut operation is the operation which diconnects a subtree from its parent (during decreaseKey/delete methods).
      */
     public static int totalCuts() {
-        return totalCuts; // should be replaced by student code
+        return totalCuts;
     }
 
     /**
