@@ -1,4 +1,8 @@
 /**
+ * Made By:
+ *  tamirdennis - 208538702
+ *  AND
+ *  rotemtzaban - 315359406
  * FibonacciHeap
  * <p>
  * An implementation of fibonacci heap over non-negative integers.
@@ -12,6 +16,10 @@ public class FibonacciHeap {
     private int numMarked;
     private int numRoots;
 
+    /**
+     * Creates an empty heap
+     * Worst case runtime : O(1)
+     */
     public FibonacciHeap() {
         this.size = 0;
         this.numMarked = 0;
@@ -26,6 +34,7 @@ public class FibonacciHeap {
      * <p>
      * The method returns true if and only if the heap
      * is empty.
+     * Worst case runtime : O(1)
      */
     public boolean empty()
 
@@ -37,6 +46,7 @@ public class FibonacciHeap {
      * public HeapNode insert(int key)
      * <p>
      * Creates a node (of type HeapNode) which contains the given key, and inserts it into the heap.
+     * Worst case runtime : O(1)
      */
     public HeapNode insert(int key) {
         HeapNode inserted = new HeapNode(key);
@@ -55,7 +65,7 @@ public class FibonacciHeap {
             }
         }
 
-        numRoots ++;
+        numRoots++;
         size++;
 
         return inserted;
@@ -65,9 +75,10 @@ public class FibonacciHeap {
      * public void deleteMin()
      * <p>
      * Delete the node containing the minimum key.
+     * Worst case runtime : O(n)
+     * Amortized runtime : O(log(n))
      */
     public void deleteMin() {
-
         if(empty()){
             return;
         }
@@ -96,14 +107,26 @@ public class FibonacciHeap {
         size--;
     }
 
+    /**
+     * After deleting the minimum item and adding it's children to the root list, this function fixes the state of the
+     * heap. The function links roots with the same degree, and than finds the minimum item in the heap and updates the
+     * min reference.
+     * Worst case runtime : O(n)
+     * Amortized runtime : O(log(n))
+     */
     private void consolidate() {
+        /**
+         * Create an array of all the roots in the heap
+         */
         HeapNode[] currentRoots = createRootList();
         HeapNode[] resultRoots = new HeapNode[getMaxPossibleRootDegree() + 1];
         for(HeapNode root : currentRoots) {
             HeapNode x = root;
             int degree = x.degree;
+            // Finding two nodes with the same degree.
             // While there is a root with a same degree as x link the two roots
             while(resultRoots[degree] != null) {
+
                 HeapNode y = resultRoots[degree];
                 if(x.key > y.key) {
                     // Making sure x's key is smaller than y's key, by swapping them if it isn't
@@ -111,6 +134,7 @@ public class FibonacciHeap {
                     x = y;
                     y = temp;
                 }
+
                 // linking the nodes together
                 link(x, y);
                 resultRoots[degree] = null;
@@ -135,6 +159,10 @@ public class FibonacciHeap {
         }
     }
 
+    /**
+     * Returns a number that is bigger than the maximum possible degree, which is log(size) / log(phi)
+     * Worst case runtime : O(1)
+     */
     private int getMaxPossibleRootDegree() {
         // The maximum possible value of the degree is log(size) / log(phi) < log(size) / log(1.6)
         return (int) Math.ceil(Math.log(size) /  Math.log(1.6));
@@ -142,6 +170,8 @@ public class FibonacciHeap {
 
     /**
     * Creates an array of all the current roots of the heap and returns it
+     * Worst case runtime : O(n)
+     * Amortized runtime : O(log(n))
      **/
     private HeapNode[] createRootList() {
         HeapNode[] rootList = new HeapNode[numRoots];
@@ -159,6 +189,7 @@ public class FibonacciHeap {
 
     /**
     * Linking 2 roots x,y together assuming x.key <= y.key
+     * Worst case runtime : O(1)
      **/
     private void link(HeapNode x, HeapNode y){
         FibonacciHeap.totalLinks++;
@@ -184,6 +215,7 @@ public class FibonacciHeap {
      * public HeapNode findMin()
      *
      * Return the node of the heap whose key is minimal.
+     * Worst case runtime : O(1)
      */
     public HeapNode findMin() {
         return min;
@@ -193,11 +225,13 @@ public class FibonacciHeap {
      * public void meld (FibonacciHeap heap2)
      *
      * Meld the heap with heap2
+     * Worst case runtime : O(1)
      */
     public void meld(FibonacciHeap heap2) {
         if (heap2.empty()) {
             return;
         }
+
         if (this.empty()) {
             this.min = heap2.min;
             this.size = heap2.size;
@@ -224,6 +258,7 @@ public class FibonacciHeap {
      * public int size()
      * <p>
      * Return the number of elements in the heap
+     * Worst case runtime : O(1)
      */
     public int size() {
         return size;
@@ -271,6 +306,8 @@ public class FibonacciHeap {
      * public void delete(HeapNode x)
      *
      * Deletes the node x from the heap.
+     * Worst case runtime : O(n)
+     * Amortized runtime : O(log(n))
      */
     public void delete(HeapNode x) {
         // Decrease the key of x to min.key - 1, so it will be the minimum key
@@ -285,6 +322,8 @@ public class FibonacciHeap {
      *
      * The function decreases the key of the node x by delta. The structure of the heap should be updated
      * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
+     * Worst case runtime : O(log(n))
+     * Amortized runtime : O(1)
      */
     public void decreaseKey(HeapNode x, int delta) {
         x.key = x.key - delta;
@@ -306,6 +345,7 @@ public class FibonacciHeap {
      * assumes node and parent aren't null
      * @param node - the node to be cut
      * @param parent - the node's parents
+     * Worst case runtime : O(1)
      */
     private void cut(HeapNode node, HeapNode parent) {
         totalCuts++;
@@ -316,6 +356,7 @@ public class FibonacciHeap {
      * cuts a node from it's parent, without increasing totalCuts
      * @param node - the node to be cut
      * @param parent - the nodes parents
+     * Worst case runtime : O(1)
      */
     private void cutInternal(HeapNode node, HeapNode parent) {
         if (node.next == node) {
@@ -335,6 +376,7 @@ public class FibonacciHeap {
     /**
      * adds a node to the root list of the heap, appending it to the minimum of the heap
      * @param node
+     * Worst case runtime: O(1)
      */
     private void  addNodeToRootList(HeapNode node) {
         //if heap is empty, set min to node
@@ -359,6 +401,8 @@ public class FibonacciHeap {
     /**
      * perform cascading cuts on the node, if it's not a root and the node isn't marked mark it,
      * else cut the node from it's parent and perform cascading cuts on the parent
+     * Worst case runtime : O(log(n))
+     * Amortized runtime : O(1)
      */
     private void cascadingCut(HeapNode node) {
         HeapNode parent = node.parent;
@@ -378,9 +422,10 @@ public class FibonacciHeap {
      * This function returns the current potential of the heap, which is:
      * Potential = #trees + 2*#marked
      * The potential equals to the number of trees in the heap plus twice the number of marked nodes in the heap.
+     * Worst case runtime : O(1)
      */
     public int potential() {
-        return 2*numMarked + numRoots;
+        return 2 * numMarked + numRoots;
     }
 
     /**
@@ -390,6 +435,7 @@ public class FibonacciHeap {
      * A link operation is the operation which gets as input two trees of the same rank, and generates a tree of
      * rank bigger by one, by hanging the tree which has larger value in its root on the tree which has smaller value
      * in its root.
+     * Worst case runtime : O(1)
      */
     public static int totalLinks() {
         return totalLinks;
@@ -400,6 +446,7 @@ public class FibonacciHeap {
      * <p>
      * This static function returns the total number of cut operations made during the run-time of the program.
      * A cut operation is the operation which diconnects a subtree from its parent (during decreaseKey/delete methods).
+     * Worst case runtime : O(1)
      */
     public static int totalCuts() {
         return totalCuts;
@@ -418,6 +465,10 @@ public class FibonacciHeap {
         private HeapNode parent;
         private boolean marked;
 
+        /**
+         * Creates a new node with the requested key
+         * worst case runtime : O(1)
+         */
         public HeapNode(int key) {
             this.key = key;
             this.degree = 0;
@@ -431,9 +482,11 @@ public class FibonacciHeap {
         public int getKey() {
             return this.key;
         }
+
         /**
          * set's the node's marked field to mark, increasing or decreasing the heap's numMarked field if
          * marked has changed
+         * Worst case runtime : O(1)
          */
         private void setMarked(boolean mark) {
             if(this.marked != mark) {
